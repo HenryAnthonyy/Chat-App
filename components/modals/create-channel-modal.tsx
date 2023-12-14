@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import qs from "query-string";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z
@@ -49,7 +50,8 @@ const formSchema = z.object({
 });
 
 export const CreateChannelModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
+  const { channelType } = data;
   const params = useParams();
 
   const isModalOpen = isOpen && type === "createChannel";
@@ -60,9 +62,17 @@ export const CreateChannelModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: ChannelType.TEXT,
+      type: channelType || ChannelType.TEXT,
     },
   });
+
+  useEffect(() => {
+    if (channelType) {
+      form.setValue("type", channelType);
+    } else {
+      form.setValue("type", ChannelType.TEXT);
+    }
+  }, [channelType, form]);
 
   const isLoading = form.formState.isSubmitting;
 
@@ -132,7 +142,7 @@ export const CreateChannelModal = () => {
                     <Select
                       disabled={isLoading}
                       onValueChange={field.onChange}
-                      defaultValue="field.value"
+                      defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger className="bg-zinc-500/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
