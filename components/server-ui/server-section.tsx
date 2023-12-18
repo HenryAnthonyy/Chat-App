@@ -54,5 +54,3 @@ const ServerSection = ({
 };
 
 export default ServerSection;
-
-//todo: make sure whenever admin clicks on add channel under a particular channel type the channel created is of that type
